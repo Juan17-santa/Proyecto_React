@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 
-export default function ProductosLanding() {
+export default function ProductosHome() {
     const navigate = useNavigate()
 
     return (

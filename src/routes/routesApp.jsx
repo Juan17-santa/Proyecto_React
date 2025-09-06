@@ -1,36 +1,40 @@
 import { Route, Routes } from "react-router-dom";
 import Landing from "../feature/landing/landing";
-import InicioLanding from "../feature/landing/feature/inicioLanding/inicioLanding";
-import ProductosLanding from "../feature/landing/feature/productosLanding/productosLanding";
-import ServiciosLanding from "../feature/landing/feature/serviciosLanding/serviciosLanding";
-import ContactanosLanding from "../feature/landing/feature/contactanosLanding/contactanosLanding";
-import Login from "../feature/landing/auth/login/login";
-import Register from "../feature/landing/auth/register/register";
+import InicioHome from "../feature/landing/pages/inicioHome/inicioHome";
+import ProductosHome from "../feature/landing/pages/productosHome/productosHome";
+import ServiciosHome from "../feature/landing/pages/serviciosHome/serviciosHome";
+import ContactanosHome from "../feature/landing/pages/contactanosHome/contactanosHome";
+import Login from "../feature/landing/pages/auth/login";
+import Register from "../feature/landing/pages/auth/register";
 
 import Dashboard from "../feature/dashboard/dashboard";
 import InicioDarshboard from "../feature/dashboard/inicioDashboard/inicioDashboard";
 import UsuariosDashboard from "../feature/dashboard/usuariosDashboard/usuariosDashboard";
+import ProductosDashboard from "../feature/dashboard/productosDashboard/productosDashboard";
+import PedidosDashboard from "../feature/dashboard/pedidosDashboard/pedidosDashboard";
 
 export default function RoutesApp() {
   return (
     <>
-        <Routes>
-            {/* Landing */}
-            <Route element={<Landing />}>
-                <Route path="/" element={<InicioLanding />} />
-                <Route path="/productosHome" element={<ProductosLanding />} />
-                <Route path="/serviciosHome" element={<ServiciosLanding />} />
-                <Route path="/contactanosHome" element={<ContactanosLanding />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-            </Route>
+      <Routes>
+        {/* Rutas de la landing */}
+        <Route path="/" element={<Landing />}>
+          <Route index element={<InicioHome />} />
+          <Route path="/productosHome" element={<ProductosHome />} />
+          <Route path="/serviciosHome" element={<ServiciosHome />} />
+          <Route path="/contactanosHome" element={<ContactanosHome />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
 
-            {/* Dashboard */}
-            <Route element={<Dashboard />}>
-                <Route path="/dashboard" element={<InicioDarshboard />} />
-                <Route path="/dashboard/usuarios" element={<UsuariosDashboard />} />
-            </Route>
-        </Routes>
+        {/* Rutas del dashboard */}
+        <Route path="/dashboard" element={<Dashboard />}>
+          <Route index element={<InicioDarshboard />} />
+          <Route path="usuarios" element={<UsuariosDashboard />} />
+          <Route path="productos" element={<ProductosDashboard />} />
+          <Route path="pedidos" element={<PedidosDashboard />} />
+        </Route>
+      </Routes>
     </>
   )
 }

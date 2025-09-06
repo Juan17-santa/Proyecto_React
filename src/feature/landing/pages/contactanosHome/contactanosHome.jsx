@@ -1,4 +1,4 @@
-export default function ContactanosLanding() {
+export default function ContactanosHome() {
 
     const handleContacto = (e) => {
         e.preventDefault()
@@ -24,7 +24,6 @@ export default function ContactanosLanding() {
                         Enviar
                     </button>
                 </form>
-
             </div>
         </>
     )

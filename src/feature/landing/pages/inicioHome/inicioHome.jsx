@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 
-export default function InicioLanding() {
+export default function InicioHome() {
     const navigate = useNavigate()
     return (
         <>

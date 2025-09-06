@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react"
 import { MdToggleOn } from "react-icons/md";
-import { FaEyeSlash } from "react-icons/fa";
+import { FaEye,FaEyeSlash } from "react-icons/fa";
+import { UsuariosServices } from "./services/usuariosServices";
 
 export default function UsuariosDashboard() {
     const [usuarios, setUsuarios] = useState([])
     const [isOpen, setIsOpen] = useState(false);
+    const [showPassword, setShowPassword] = useState(false)
+    const [emailExists, setEmailExists] = useState(false)
 
     useEffect(() => {
-        const data = JSON.parse(localStorage.getItem("usersdata")) || [];
-        setUsuarios(data);
+        setUsuarios(UsuariosServices.listUsers())
     }, []);
 
     const [formData, setFormData] = useState({
@@ -28,15 +30,33 @@ export default function UsuariosDashboard() {
     function formUsuarios(e) {
         e.preventDefault()
 
-        const dataUser = JSON.parse(localStorage.getItem("usersdata")) || []
-
-        dataUser.push(formData)
-
-        localStorage.setItem("usersdata", JSON.stringify(dataUser))
+        const createUser = UsuariosServices.createUsers(formData)
+        setUsuarios(createUser)
 
         alert("Usuario registrado exitosamente")
         setIsOpen(false)
-        setUsuarios(dataUser)
+    }
+
+    function deleteRegisters() {
+        alert("Se eliminaran todos los registros")
+        localStorage.removeItem("usersdata")
+        setUsuarios([])
+    }
+
+    function onblurUsers(e) {
+        const { value } = e.target;
+        const users = UsuariosServices.listUsers();
+
+        const existe = users.some((user) =>
+            user.email === value
+        )
+
+        if (existe) {
+            alert("El correo ya existe")
+        }
+
+        setEmailExists(existe)
+
     }
 
     return (
@@ -72,7 +92,12 @@ export default function UsuariosDashboard() {
                                     <td className="border px-4 py-2">{index + 1}</td>
                                     <td className="border px-4 py-2">{usuario.email}</td>
                                     <td className="border px-4 py-2">{usuario.user}</td>
-                                    <td className="border px-4 py-2 flex items-center justify-between">{usuario.password} <FaEyeSlash /></td>
+                                    <td className="border px-4 py-2 flex justify-between">
+                                        {showPassword ? usuario.password : "••••••"}
+                                        <button type="button" onClick={() => setShowPassword(!showPassword)}>
+                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                        </button>
+                                    </td>
                                     <td className="border px-4 py-2">
                                         <MdToggleOn className="text-2xl text-gray-500 cursor-pointer" />
                                     </td>
@@ -80,6 +105,7 @@ export default function UsuariosDashboard() {
                             ))}
                         </tbody>
                     </table>
+                    <button type="button" className="px-3 py-2 bg-red-600 text-white rounded mt-4" onClick={deleteRegisters}>Borrar registros</button>
                 </div>
             </div>
 
@@ -88,19 +114,36 @@ export default function UsuariosDashboard() {
                     <div className="bg-white border rounded-2xl shadow-lg w-96 p-6">
                         <h2 className="text-xl font-bold mb-4">Registrar nuevo usuario</h2>
                         <form className="flex flex-col gap-3" onSubmit={formUsuarios}>
-                            <input type="email" placeholder="Correo electrónico" className="border p-2 rounded" name="email" onChange={handleChange} />
-                            <input type="text" placeholder="Usuario" className="border p-2 rounded" name="user" onChange={handleChange} />
-                            <input type="password" placeholder="Contraseña" className="border p-2 rounded" name="password" onChange={handleChange} />
+                            <input type="email" placeholder="Correo electrónico" className="border p-2 rounded" name="email" onChange={handleChange} onBlur={onblurUsers} />
+                            <input type="text" placeholder="Usuario" className="border p-2 rounded" name="user" onChange={handleChange} disabled={emailExists}/>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    placeholder="Contraseña"
+                                    className="border p-2 rounded flex-1"
+                                    name="password"
+                                    onChange={handleChange}
+                                    disabled={emailExists}
+                                    type={showPassword ? 'text' : 'password'}
+                                />
+                                <button type="button" onClick={() => setShowPassword(!showPassword)} className="px-2">
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
+                            </div>
 
                             <div className="flex justify-end gap-3 mt-4">
                                 <button type="button" onClick={() => setIsOpen(false)}
                                     className="bg-gray-400 hover:bg-gray-500 px-3 py-2 rounded text-white">
                                     Cancelar
                                 </button>
-                                <button type="submit"
-                                    className="bg-green-500 hover:bg-green-600 px-3 py-2 rounded text-white">
-                                    Guardar
-                                </button>
+                                {!emailExists ? (
+                                    <button type="submit" className="bg-green-500 hover:bg-green-600 px-3 py-2 rounded text-white">
+                                        Guardar
+                                    </button>
+                                ) : (
+                                    <button type="button" disabled className="bg-gray-400 px-3 py-2 rounded text-white cursor-not-allowed">
+                                        Guardar
+                                    </button>
+                                )}
                             </div>
                         </form>
                     </div>
